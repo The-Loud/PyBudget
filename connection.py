@@ -5,7 +5,7 @@ postgres_engine = create_engine('postgresql+psycopg2://scott:tiger@localhost/myd
 
 
 # PyMySQL
-sql_engine = create_engine('mysql+pymysql://user:somepass@yeet.local/pybudget')
+sql_engine = create_engine('mysql+pymysql://user:password@yeet.local/pybudget')
 
 
 DB_ENG = {'sql': sql_engine,

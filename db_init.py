@@ -12,9 +12,6 @@ from sqlalchemy.dialects.mysql import \
 meta = MetaData()
 Base = declarative_base()
 
-# Transaction table
-# Refactor these to have classes instead.
-
 
 class Transactions(Base):
     __tablename__ = 'transactions'
@@ -28,11 +25,6 @@ class Transactions(Base):
     description = Column('description', VARCHAR(length=1024))
     account_name = Column('description', VARCHAR(length=1024))
     amount = Column('amount', DECIMAL(precision=22, scale=2))
-
-    def __init(self, amount, desc, acct):
-        self.description = desc
-        self.amount = amount
-        self.account_name = acct
 
     def __repr__(self):
         return f"{self.id}, {self.created_at}, {self.updated_at},\
@@ -51,10 +43,6 @@ class Accounts(Base):
     description = Column('description', VARCHAR(length=1024))
     name = Column('name', VARCHAR(length=250), nullable=False)
 
-    def __init__(self, name, desc):
-        self.name = name
-        self.description = desc
-
     def __repr__(self):
         return f"{self.id}, {self.created_at}, {self.updated_at},\
                  {self.deleted_at}, {self.account_id},\
@@ -62,7 +50,7 @@ class Accounts(Base):
 
 
 class Assets(Base):
-    __tablename__ = 'accounts'
+    __tablename__ = 'assets'
 
     id = Column('id', Integer, primary_key=True, autoincrement=True, nullable=False)
     created_at = Column('created_at', TIMESTAMP, nullable=False)
@@ -73,16 +61,10 @@ class Assets(Base):
     name = Column('name', VARCHAR(length=250), nullable=False)
     amount = Column('amount', DECIMAL(precision=22, scale=2))
 
-    def __init__(self, name, desc, amount):
-        self.name = name
-        self.description = desc
-        self.amount = amount
-
     def __repr__(self):
         return f"{self.id}, {self.created_at}, {self.updated_at},\
                  {self.deleted_at}, {self.account_id},\
                  {self.description}, {self.name}, {self.amount}"
 
-
-meta.create_all(DB_ENG['sql'])
-session = Session()
+    def go(self, session):
+        session.query(Assets).update({"q": 18})

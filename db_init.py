@@ -48,6 +48,8 @@ class Accounts(Base):
                  {self.deleted_at}, {self.account_id},\
                  {self.description}, {self.name}"
 
+    def go(self, session, d):
+        session.query(Accounts).insert(d)
 
 class Assets(Base):
     __tablename__ = 'assets'

@@ -14,6 +14,7 @@ Base = declarative_base()
 
 
 class Transactions(Base):
+    '''Transactions table'''
     __tablename__ = 'transactions'
 
     id = Column('id', Integer, primary_key=True, autoincrement=True, nullable=False)
@@ -33,6 +34,7 @@ class Transactions(Base):
 
 
 class Accounts(Base):
+    '''Accounts table'''
     __tablename__ = 'accounts'
 
     id = Column('id', Integer, primary_key=True, autoincrement=True, nullable=False)
@@ -51,7 +53,9 @@ class Accounts(Base):
     def go(self, session, d):
         session.query(Accounts).insert(d)
 
+
 class Assets(Base):
+    '''Assets table'''
     __tablename__ = 'assets'
 
     id = Column('id', Integer, primary_key=True, autoincrement=True, nullable=False)

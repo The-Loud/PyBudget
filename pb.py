@@ -2,12 +2,14 @@ from prettytable import PrettyTable
 from sqlalchemy.exc import SQLAlchemyError
 import db_init as ts
 from connection import Session, DB_ENG
+import uuid
+
 
 # Using the mariadb connection
 ts.meta.create_all(DB_ENG['sql'])
 session = Session()
 
-account = ts.Accounts(name="savings", description="test description")
+
 
 
 # Let's get some user input now.
@@ -29,21 +31,26 @@ def welcome():
 
 
 def add_account():
-    d = {}
+    d = []
     done = 'n'
     while done != 'y':
-        name, desc = input("What is the account name and description?: ")
-        d[name] = desc
-        done = input('Would you like to add another? (y/n): ')
+        try:
+            newid = uuid.uuid1().hex
+            name, desc = input("What is the account name and description?: ")
+            d.append(ts.Accounts(name=name, description=desc, account_ud=uuid.uuid1().hex))
+            done = input('Would you like to add another? (y/n): ')
+        except SQLAlchemyError as e:
+            print(e)
+            session.rollback()
+        finally:
+            session.close()
 
-'''
+
 try:
-    for _key, _val in d.items():
-        row = ts.Accounts(name=_key, description=_val)
-        session.add(row)
+    for _val in add_account():
+        session.add(_val)
     session.commit()
 except SQLAlchemyError as e:
     print(e)
 finally:
     session.close()
-'''

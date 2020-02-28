@@ -1,15 +1,15 @@
 from prettytable import PrettyTable
 from sqlalchemy.exc import SQLAlchemyError
 import db_init as ts
-from connection import Session, DB_ENG
+from connection import DB_ENG
 import uuid
+from sqlalchemy.orm import sessionmaker
 
 
 # Using the mariadb connection
-ts.meta.create_all(DB_ENG['sql'])
+Session = sessionmaker(bind=DB_ENG['sql'])
 session = Session()
-
-
+ts.Base.metadata.create_all(DB_ENG['sql'])
 
 
 # Let's get some user input now.
@@ -32,13 +32,22 @@ def welcome():
 
 def add_account():
     d = []
-    done = 'n'
-    while done != 'y':
+    done = 'y'
+    while done != 'n':
         try:
-            newid = uuid.uuid1().hex
-            name, desc = input("What is the account name and description?: ")
-            d.append(ts.Accounts(name=name, description=desc, account_ud=uuid.uuid1().hex))
+            name, desc = input("What is the account name and description?: ").split()
+            d.append(ts.Accounts(name=name, description=desc, account_id=uuid.uuid1().hex))
             done = input('Would you like to add another? (y/n): ')
+        except ValueError as e:
+            print(e)
+            print('\n')
+            print("Please enter a valid name and account description")
+            continue
+
+        try:
+            for _val in d:
+                session.add(_val)
+            session.commit()
         except SQLAlchemyError as e:
             print(e)
             session.rollback()
@@ -46,11 +55,5 @@ def add_account():
             session.close()
 
 
-try:
-    for _val in add_account():
-        session.add(_val)
-    session.commit()
-except SQLAlchemyError as e:
-    print(e)
-finally:
-    session.close()
+if __name__ == '__main__':
+    add_account()

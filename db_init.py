@@ -1,6 +1,6 @@
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from connection import DB_ENG, Session
+from connection import DB_ENG
 from sqlalchemy.dialects.mysql import \
         BIGINT, BINARY, BIT, BLOB, BOOLEAN, CHAR, DATE, \
         DATETIME, DECIMAL, DOUBLE, ENUM, FLOAT, INTEGER, \
@@ -9,7 +9,6 @@ from sqlalchemy.dialects.mysql import \
         TINYBLOB, TINYINT, TINYTEXT, VARBINARY, VARCHAR, YEAR
 
 
-meta = MetaData()
 Base = declarative_base()
 
 
@@ -24,7 +23,7 @@ class Transactions(Base):
     reconciled = Column('reconciled', TINYINT)
     account_id = Column('account_id', INTEGER, ForeignKey('accounts.id'), nullable=False)
     description = Column('description', VARCHAR(length=1024))
-    account_name = Column('description', VARCHAR(length=1024))
+    account_name = Column('account_name', VARCHAR(length=1024))
     amount = Column('amount', DECIMAL(precision=22, scale=2))
 
     def __repr__(self):
@@ -41,7 +40,7 @@ class Accounts(Base):
     created_at = Column('created_at', TIMESTAMP, nullable=False)
     updated_at = Column('updated_at', TIMESTAMP)
     deleted_at = Column('deleted_at', TIMESTAMP)
-    account_id = Column('account_id', INTEGER(unsigned=True))
+    account_id = Column('account_id', String(100))
     description = Column('description', VARCHAR(length=1024))
     name = Column('name', VARCHAR(length=250), nullable=False)
 
@@ -74,3 +73,6 @@ class Assets(Base):
 
     def go(self, session):
         session.query(Assets).update({"q": 18})
+
+
+# Base.metadata.create_all(DB_ENG['sql'])
